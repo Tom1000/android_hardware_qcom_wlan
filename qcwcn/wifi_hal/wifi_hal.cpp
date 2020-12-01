@@ -137,7 +137,7 @@ void wifi_socket_set_local_port(struct nl_sock *sock, uint32_t port)
 
 static nl_sock * wifi_create_nl_socket(int port, int protocol)
 {
-    // ALOGI("Creating socket");
+    ALOGI("Creating socket");
     struct nl_sock *sock = nl_socket_alloc();
     if (sock == NULL) {
         ALOGE("Failed to create NL socket");
@@ -638,6 +638,7 @@ wifi_error wifi_initialize(wifi_handle *handle)
         ret = WIFI_ERROR_UNKNOWN;
         goto unload;
     }
+    ALOGI ("TTT: wifi_create_nl_socket success");
 
     /* Set the socket buffer size */
     if (nl_socket_set_buffer_size(cmd_sock, (256*1024), 0) < 0) {
@@ -1697,7 +1698,7 @@ public:
 
     virtual wifi_error create() {
         int nlctrlFamily = genl_ctrl_resolve(mInfo->cmd_sock, "nlctrl");
-        // ALOGI("ctrl family = %d", nlctrlFamily);
+        ALOGI("ctrl family = %d", nlctrlFamily);
         wifi_error ret = mMsg.create(nlctrlFamily, CTRL_CMD_GETFAMILY, 0, 0);
         if (ret != WIFI_SUCCESS)
             return ret;
@@ -1708,7 +1709,7 @@ public:
 
     virtual int handleResponse(WifiEvent& reply) {
 
-        // ALOGI("handling reponse in %s", __func__);
+        ALOGI("handling reponse in %s", __func__);
 
         struct nlattr **tb = reply.attributes();
         struct nlattr *mcgrp = NULL;
@@ -1718,13 +1719,13 @@ public:
             ALOGI("No multicast groups found");
             return NL_SKIP;
         } else {
-            // ALOGI("Multicast groups attr size = %d",
-            // nla_len(tb[CTRL_ATTR_MCAST_GROUPS]));
+            ALOGI("Multicast groups attr size = %d",
+            nla_len(tb[CTRL_ATTR_MCAST_GROUPS]));
         }
 
         for_each_attr(mcgrp, tb[CTRL_ATTR_MCAST_GROUPS], i) {
 
-            // ALOGI("Processing group");
+            ALOGI("Processing group");
             struct nlattr *tb2[CTRL_ATTR_MCAST_GRP_MAX + 1];
             nla_parse(tb2, CTRL_ATTR_MCAST_GRP_MAX, (nlattr *)nla_data(mcgrp),
                 nla_len(mcgrp), NULL);
@@ -1736,7 +1737,7 @@ public:
             char *grpName = (char *)nla_data(tb2[CTRL_ATTR_MCAST_GRP_NAME]);
             int grpNameLen = nla_len(tb2[CTRL_ATTR_MCAST_GRP_NAME]);
 
-            // ALOGI("Found group name %s", grpName);
+            ALOGI("Found group name %s", grpName);
 
             if (strncmp(grpName, mGroup, grpNameLen) != 0)
                 continue;
@@ -1778,7 +1779,7 @@ static int get_interface(const char *name, interface_info *info)
 {
     strlcpy(info->name, name, (IFNAMSIZ + 1));
     info->id = if_nametoindex(name);
-    // ALOGI("found an interface : %s, id = %d", name, info->id);
+    ALOGI("found an interface : %s, id = %d", name, info->id);
     return WIFI_SUCCESS;
 }
 

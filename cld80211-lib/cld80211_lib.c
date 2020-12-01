@@ -483,8 +483,8 @@ struct cld80211_ctx * cld80211_init(void)
 
 	ctx->netlink_familyid = genl_ctrl_resolve(ctx->sock, "cld80211");
 	if (ctx->netlink_familyid < 0) {
-		ALOGE("%s: Could not resolve cld80211 familty id",
-		      getprogname());
+		ALOGE("%s: Could not resolve cld80211 familty id. err:%d",
+		      getprogname(), ctx->netlink_familyid);
 		goto cleanup;
 	}
 

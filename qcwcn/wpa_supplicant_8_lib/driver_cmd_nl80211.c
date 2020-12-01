@@ -34,6 +34,7 @@
 #define WPA_PS_DISABLED		1
 #define UNUSED(x)	(void)(x)
 
+#define DEBUG
 
 /* Return type for setBand*/
 enum {
@@ -125,6 +126,9 @@ int wpa_driver_nl80211_driver_cmd(void *priv, char *cmd, char *buf,
 			ret = os_snprintf(buf, buf_len,
 					  "Macaddr = " MACSTR "\n", MAC2STR(macaddr));
 	} else { /* Use private command */
+		wpa_printf(MSG_ERROR, "%s: private command detected: %s\n",
+				   __func__, cmd);
+		
 		memset(&ifr, 0, sizeof(ifr));
 		memset(&priv_cmd, 0, sizeof(priv_cmd));
 		os_memcpy(buf, cmd, strlen(cmd) + 1);
@@ -135,8 +139,9 @@ int wpa_driver_nl80211_driver_cmd(void *priv, char *cmd, char *buf,
 		priv_cmd.total_len = buf_len;
 		ifr.ifr_data = &priv_cmd;
 
+		wpa_printf(MSG_DEBUG, "%s: TTT: all OK so far\n", __func__);
 		if ((ret = ioctl(drv->global->ioctl_sock, SIOCDEVPRIVATE + 1, &ifr)) < 0) {
-			wpa_printf(MSG_ERROR, "%s: failed to issue private commands\n", __func__);
+			wpa_printf(MSG_ERROR, "%s: TTT-qcom-caf-lib-driver: failed to issue private commands\n", __func__);
 		} else {
 			drv_errors = 0;
 			if((os_strncasecmp(cmd, "SETBAND", 7) == 0) &&
